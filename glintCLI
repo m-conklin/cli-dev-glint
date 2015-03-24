@@ -1,0 +1,20 @@
+#!/usr/bin/python
+
+import glintAPI
+import argparse
+import logging
+
+#print glintAPI.getImages("this", "works")
+
+
+class glintCLI():
+
+    def __init__(self, parser_class=argparse.ArguementParser):
+        self.parser_class = parser_class
+
+    def get_base_parser(self):
+        parser = self.parser_class(
+                prog='glint',
+                epilog='See "glint help COMMAND" '
+                        'for help on a specific command.'
+        )
