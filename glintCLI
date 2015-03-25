@@ -3,11 +3,24 @@
 import glintAPI
 import argparse
 import logging
+import os
 
 #print glintAPI.getImages("this", "works")
 
+def env(*vars, **kwargs):
+""" 
+    Try to find the first environnental variable in vars,
+    if successful return it.
+    Otherwise return the default defined in kwargs.
+"""
+    for v in vars:
+        value = os.environ.get(v)
+        if value:
+            return value
+    return kwargs.get('default', '')
 
-class glintCLI():
+
+class glintCLI(object):
 
     def __init__(self, parser_class=argparse.ArguementParser):
         self.parser_class = parser_class
@@ -18,3 +31,72 @@ class glintCLI():
                 epilog='See "glint help COMMAND" '
                         'for help on a specific command.'
         )
+
+        # Global arguments
+
+        parser.add_argument('-h',
+                            '--help',
+                            action='store_true',
+                            help=argparse.SURPRESS)
+
+
+        parser.add_arguement('--user-token',
+                             default=env('USER_TOKEN'),
+                             help='Token used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[USER_TOKEN].')
+        
+         parser.add_arguement('--user-tenant',
+                             default=env('USER_TENANT'),
+                             help='Tenant used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[USER_TENANT].')
+
+
+         parser.add_arguement('--user-id',
+                             default=env('USER_ID'),
+                             help='User ID used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[USER_ID].')
+
+         parser.add_arguement('--site-id',
+                             default=env('SITE_ID'),
+                             help='Site ID used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[SITE_ID].')
+
+
+         parser.add_arguement('--site-data',
+                             default=env('SITEDATA'),
+                             help='Site data used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[SITEDATA].')
+
+
+         parser.add_arguement('--ck-type',
+                             default=env('CK_TYPE'),
+                             help='CK type used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[CK_TYPE].')
+
+
+         parser.add_arguement('--cred-data',
+                             default=env('CREDDATA'),
+                             help='Credential data used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[CREDDATA].')
+         
+         return parser
+
+
+
+
+    def get_sub_command_parser(self):
+        parser = self.get_base_parser()
+
+        self.subcommands = {}
+        subparser = parser.add_subparser()
+
+
+
+

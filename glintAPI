@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # An API to commmunicate with jsonservices.py
 
 #import logging
