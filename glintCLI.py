@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import glintAPI
 import argparse
 import logging
@@ -104,6 +102,24 @@ class glintCommands(object):
     def listSites(self, args):
         return glintAPI.listSites(args.user_token, args.user_tenant)
 
+    def deleteSite(self, args):
+        return glintAPI.deleteSite(args.user_token, args.user_tenant, args.user_id, args.site_id)
+
+    def createSite(self, args):
+        return glintAPI.createSite(args.user_token, args.user_tenant, args.user_id, args.site_data)
+
+    def deleteCredential(self, args):
+        return glintAPI.deleteCredential(args.user_token, args.user_tenant, args.user_id, args.site_id)
+
+    def getCredential(self, args):
+        return glintAPI.getCredential(args.user_token, args.user_tenant, args.user_id, args.site_id)
+
+    def hasCredential(self, args):
+        return glintAPI.hasCredential(args.user_token, args.user_tenant, args.user_id, args.site_id, args.ck_type)
+
+    def addCredential(self, args):
+        return glintAPI.addCredential(args.user_token, args.user_tenant, args.cred_data)
+
 
     def get_sub_command_parser(self):
 
@@ -145,6 +161,47 @@ class glintCommands(object):
         parser_listSites.set_defaults(func=self.listSites)
 
 
+        # subparser for the delete-site command
+        parser_deleteSite = subparser.add_parser('delete-site',
+                                                 parents=[self.parent],
+                                                 help='delete site help')
+        parser_deleteSite.set_defaults(func=self.deleteSite)
+
+
+        # subparser for the create-site command
+        parser_createSite = subparser.add_parser('create-site',
+                                                 parents=[self.parent],
+                                                 help='create site help')
+        parser_createSite.set_defaults(func=self.createSite)
+
+
+        # subparser for the delete-credential command
+        parser_deleteCredential = subparser.add_parser('delete-credential',
+                                                 parents=[self.parent],
+                                                 help='delete credential help')
+        parser_deleteCredential.set_defaults(func=self.deleteCredential)
+
+
+        # subparser for the get-credential command
+        parser_getCredential = subparser.add_parser('get-credential',
+                                                 parents=[self.parent],
+                                                 help='get credential help')
+        parser_getCredential.set_defaults(func=self.getCredential)
+
+
+        # subparser for the has-credential command
+        parser_hasCredential = subparser.add_parser('has-credential',
+                                                 parents=[self.parent],
+                                                 help='has credential help')
+        parser_hasCredential.set_defaults(func=self.hasCredential)
+
+
+        # subparser for the add-credential command
+        parser_addCredential = subparser.add_parser('add-credential',
+                                                 parents=[self.parent],
+                                                 help='add credential help')
+        parser_addCredential.set_defaults(func=self.addCredential)
+
         return parser
     
 
@@ -155,6 +212,7 @@ class glintCommands(object):
 
         command_args = subcommand_parser.parse_args(argv)
 
+#        print command_args.site_data
 
         print command_args.func(command_args)
 
