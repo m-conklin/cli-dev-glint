@@ -1,4 +1,4 @@
-import glintAPI
+from glintAPI import glint_api
 import argparse
 import logging
 import os
@@ -24,6 +24,7 @@ class glintCommands(object):
 
     def __init__(self, parser_class=argparse.ArgumentParser):
         self.parser_class = parser_class
+        self.api = glint_api('api.log', 'logging.DEBUG', 'api.yaml')
 
     def get_base_parser(self):
         self.parent = self.parser_class(
@@ -89,8 +90,11 @@ class glintCommands(object):
          
 
     def getImages(self, args):
-        return glintAPI.getImages(args.user_token, args.user_tenant)
-
+        images = self.api.getImages(args.user_token, args.user_tenant,args.user_id)
+        if images:
+            return images
+        else:
+            print "ERROR"
 
     def save(self, args):
         return glintAPI.save(args.json_message, args.user_token, args.user_tenant)
