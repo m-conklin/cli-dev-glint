@@ -36,17 +36,17 @@ class glintCommands(object):
 
         # Global arguments
 
-        self.parent.add_argument('--user-token',
-                             default=env('USER_TOKEN'),
-                             help='Token used for authentication with the '
-                                  'OpenStack Identity service. '
-                                  'Defaults to env[USER_TOKEN].')
+#        self.parent.add_argument('--user-token',
+#                             default=env('USER_TOKEN'),
+#                             help='Token used for authentication with the '
+#                                  'OpenStack Identity service. '
+#                                  'Defaults to env[USER_TOKEN].')
         
-        self.parent.add_argument('--user-tenant',
-                             default=env('USER_TENANT'),
-                             help='Tenant used for authentication with the '
-                                  'OpenStack Identity service. '
-                                  'Defaults to env[USER_TENANT].')
+#        self.parent.add_argument('--user-tenant',
+#                             default=env('USER_TENANT'),
+#                             help='Tenant used for authentication with the '
+#                                  'OpenStack Identity service. '
+#                                  'Defaults to env[USER_TENANT].')
 
 
         self.parent.add_argument('--json-message',
@@ -55,11 +55,11 @@ class glintCommands(object):
                                   'OpenStack Identity service. '
                                   'Defaults to env[JSON_MESSAGE].')
 
-        self.parent.add_argument('--user-id',
-                             default=env('USER_ID'),
-                             help='User ID used for authentication with the '
-                                  'OpenStack Identity service. '
-                                  'Defaults to env[USER_ID].')
+#        self.parent.add_argument('--user-id',
+#                             default=env('USER_ID'),
+#                             help='User ID used for authentication with the '
+#                                  'OpenStack Identity service. '
+#                                  'Defaults to env[USER_ID].')
 
         self.parent.add_argument('--site-id',
                              default=env('SITE_ID'),
@@ -90,39 +90,38 @@ class glintCommands(object):
          
 
     def getImages(self, args):
-        images = self.api.getImages(args.user_token, args.user_tenant,args.user_id)
+        images = self.api.getImages()
         if images:
             return images
         else:
             print "ERROR"
 
     def save(self, args):
-        return glintAPI.save(args.json_message, args.user_token, args.user_tenant)
+        return self.api.save(args.json_message)
 
     def credentials(self, args):
-        return glintAPI.credentials(args.user_token, args.user_tenant, args.user_id)
-
+        return self.api.credentials()
 
     def listSites(self, args):
-        return glintAPI.listSites(args.user_token, args.user_tenant)
+        return self.api.listSites()
 
     def deleteSite(self, args):
-        return glintAPI.deleteSite(args.user_token, args.user_tenant, args.user_id, args.site_id)
+        return self.api.deleteSite(args.site_id)
 
     def createSite(self, args):
-        return glintAPI.createSite(args.user_token, args.user_tenant, args.user_id, args.site_data)
+        return self.api.createSite(args.site_data)
 
     def deleteCredential(self, args):
-        return glintAPI.deleteCredential(args.user_token, args.user_tenant, args.user_id, args.site_id)
+        return self.api.deleteCredential(args.site_id)
 
     def getCredential(self, args):
-        return glintAPI.getCredential(args.user_token, args.user_tenant, args.user_id, args.site_id)
+        return self.api.getCredential(args.site_id)
 
     def hasCredential(self, args):
-        return glintAPI.hasCredential(args.user_token, args.user_tenant, args.user_id, args.site_id, args.ck_type)
+        return self.api.hasCredential( args.site_id, args.ck_type)
 
     def addCredential(self, args):
-        return glintAPI.addCredential(args.user_token, args.user_tenant, args.cred_data)
+        return self.api.addCredential(args.cred_data)
 
 
     def get_sub_command_parser(self):
