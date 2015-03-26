@@ -2,7 +2,7 @@ glint
 
         get-images          --user-token    --user-tenant
 
-        save                --user-token    --user-tenant
+        save                --user-token    --user-tenant   --json-message
 
         credentials         --user-token    --user-tenant   --user-id
 

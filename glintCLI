@@ -28,67 +28,67 @@ class glintCommands(object):
         self.parser_class = parser_class
 
     def get_base_parser(self):
-        parser = self.parser_class(
+        self.parent = self.parser_class(
                 prog='glint',
                 epilog='See "glint help COMMAND" '
-                        'for help on a specific command.'
+                        'for help on a specific command.',
+                add_help=False
         )
 
         # Global arguments
 
-#        parser.add_argument('-h',
-#                           '--help',
-#                          action='store_true',
-#                            help=argparse.SUPPRESS)
-
-
-        parser.add_argument('--user-token',
+        self.parent.add_argument('--user-token',
                              default=env('USER_TOKEN'),
                              help='Token used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[USER_TOKEN].')
         
-        parser.add_argument('--user-tenant',
+        self.parent.add_argument('--user-tenant',
                              default=env('USER_TENANT'),
                              help='Tenant used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[USER_TENANT].')
 
 
-        parser.add_argument('--user-id',
+        self.parent.add_argument('--json-message',
+                             default=env('JSON_MESSAGE'),
+                             help='Message used for authentication with the '
+                                  'OpenStack Identity service. '
+                                  'Defaults to env[JSON_MESSAGE].')
+
+        self.parent.add_argument('--user-id',
                              default=env('USER_ID'),
                              help='User ID used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[USER_ID].')
 
-        parser.add_argument('--site-id',
+        self.parent.add_argument('--site-id',
                              default=env('SITE_ID'),
                              help='Site ID used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[SITE_ID].')
 
 
-        parser.add_argument('--site-data',
+        self.parent.add_argument('--site-data',
                              default=env('SITEDATA'),
                              help='Site data used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[SITEDATA].')
 
 
-        parser.add_argument('--ck-type',
+        self.parent.add_argument('--ck-type',
                              default=env('CK_TYPE'),
                              help='CK type used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[CK_TYPE].')
 
 
-        parser.add_argument('--cred-data',
+        self.parent.add_argument('--cred-data',
                              default=env('CREDDATA'),
                              help='Credential data used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[CREDDATA].')
          
-        return parser
 
     def getImages(self, args):
         return glintAPI.getImages(args.user_token, args.user_tenant)
@@ -101,76 +101,62 @@ class glintCommands(object):
         return glintAPI.credentials(args.user_token, args.user_tenant, args.user_id)
 
 
+    def listSites(self, args):
+        return glintAPI.listSites(args.user_token, args.user_tenant)
+
+
     def get_sub_command_parser(self):
-        parser = self.get_base_parser()
+
+        parser = self.parser_class(
+                prog='glint',
+                epilog='See "glint help COMMAND" '
+                        'for help on a specific command.',
+                add_help=False
+        )
+
         subparser = parser.add_subparsers(prog='glint')
 
         # subparser for the get-images command
-        parser_getImages = subparser.add_parser('get-images', help='get images help')
-        parser_getImages.add_argument('--user-token',
-                                      default=env('USER_TOKEN'),
-                                      help='Token used for authentication with the '
-                                            'OpenStack Identity service. '
-                                            'Defaults to env[USER_TOKEN].')
-        parser_getImages.add_argument('--user-tenant',
-                                      default=env('USER_TENANT'),
-                                      help='Token used for authentication with the '
-                                            'OpenStack Identity service. '
-                                            'Defaults to env[USER_TOKEN].')
+        parser_getImages = subparser.add_parser('get-images',
+                                                parents=[self.parent], 
+                                                help='get images help')
         parser_getImages.set_defaults(func=self.getImages)
 
         
         # subparser for the save command
-        parser_save = subparser.add_parser('save', help='save help')
-        parser_save.add_argument('--user-token',
-                                 default=env('USER_TOKEN'),
-                                 help='Token used for authentication with the '
-                                      'OpenStack Identity service. '
-                                      'Defaults to env[USER_TOKEN].')
-        parser_save.add_argument('--user-tenant',
-                                 default=env('USER_TENANT'),
-                                 help='Token used for authentication with the '
-                                      'OpenStack Identity service. '
-                                      'Defaults to env[USER_TOKEN].')
-        parser_save.add_argument('--json-message',
-                                 default=env('JSON_MESSAGE'),
-                                 help='Message used for authentication with the '
-                                      'OpenStack Identity service. '
-                                      'Defaults to env[JSON_MESSAGE].')
+        parser_save = subparser.add_parser('save',
+                                           parents=[self.parent],
+                                           help='save help')
         parser_save.set_defaults(func=self.save)
 
 
         # subparser for the credentials command
-        parser_credential = subparser.add_parser('credentials', help='credentials help')
-        parser_credential.add_argument('--user-token',
-                                        default=env('USER_TOKEN'),
-                                        help='Token used for authentication with the '
-                                             'OpenStack Identity service. '
-                                             'Defaults to env[USER_TOKEN].')
-        parser_credential.add_argument('--user-tenant',
-                                        default=env('USER_TENANT'),
-                                        help='Token used for authentication with the '
-                                            'OpenStack Identity service. ')
-        parser_credential.add_argument('--user-id',
-                                        default=env('USER_ID'),
-                                        help='User ID used for authentication with the '
-                                        'OpenStack Identity service. '
-                                        'Defaults to env[USER_ID].')
+        parser_credential = subparser.add_parser('credentials',
+                                                 parents=[self.parent],
+                                                 help='credentials help')
         parser_credential.set_defaults(func=self.credentials)
+
+
+
+        # subparser for the list-sites command
+        parser_listSites = subparser.add_parser('list-sites',
+                                                 parents=[self.parent],
+                                                 help='list sites help')
+        parser_listSites.set_defaults(func=self.listSites)
 
 
         return parser
     
 
     def main(self, argv):
+        self.get_base_parser()
+
         subcommand_parser = self.get_sub_command_parser()
-#        print argv
 
-        args = subcommand_parser.parse_args(argv)
+        command_args = subcommand_parser.parse_args(argv)
 
-#        print args
 
-        print args.func(args)
+        print command_args.func(command_args)
 
 
 def main():
