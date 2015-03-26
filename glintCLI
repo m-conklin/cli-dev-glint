@@ -4,15 +4,17 @@ import glintAPI
 import argparse
 import logging
 import os
+import sys
+#import warnings
 
 #print glintAPI.getImages("this", "works")
 
 def env(*vars, **kwargs):
-""" 
-    Try to find the first environnental variable in vars,
-    if successful return it.
-    Otherwise return the default defined in kwargs.
-"""
+    """ Try to find the first environnental variable in vars,
+        if successful return it.
+        Otherwise return the default defined in kwargs.
+
+    """
     for v in vars:
         value = os.environ.get(v)
         if value:
@@ -20,9 +22,9 @@ def env(*vars, **kwargs):
     return kwargs.get('default', '')
 
 
-class glintCLI(object):
+class glintCommands(object):
 
-    def __init__(self, parser_class=argparse.ArguementParser):
+    def __init__(self, parser_class=argparse.ArgumentParser):
         self.parser_class = parser_class
 
     def get_base_parser(self):
@@ -34,69 +36,145 @@ class glintCLI(object):
 
         # Global arguments
 
-        parser.add_argument('-h',
-                            '--help',
-                            action='store_true',
-                            help=argparse.SURPRESS)
+#        parser.add_argument('-h',
+#                           '--help',
+#                          action='store_true',
+#                            help=argparse.SUPPRESS)
 
 
-        parser.add_arguement('--user-token',
+        parser.add_argument('--user-token',
                              default=env('USER_TOKEN'),
                              help='Token used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[USER_TOKEN].')
         
-         parser.add_arguement('--user-tenant',
+        parser.add_argument('--user-tenant',
                              default=env('USER_TENANT'),
                              help='Tenant used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[USER_TENANT].')
 
 
-         parser.add_arguement('--user-id',
+        parser.add_argument('--user-id',
                              default=env('USER_ID'),
                              help='User ID used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[USER_ID].')
 
-         parser.add_arguement('--site-id',
+        parser.add_argument('--site-id',
                              default=env('SITE_ID'),
                              help='Site ID used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[SITE_ID].')
 
 
-         parser.add_arguement('--site-data',
+        parser.add_argument('--site-data',
                              default=env('SITEDATA'),
                              help='Site data used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[SITEDATA].')
 
 
-         parser.add_arguement('--ck-type',
+        parser.add_argument('--ck-type',
                              default=env('CK_TYPE'),
                              help='CK type used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[CK_TYPE].')
 
 
-         parser.add_arguement('--cred-data',
+        parser.add_argument('--cred-data',
                              default=env('CREDDATA'),
                              help='Credential data used for authentication with the '
                                   'OpenStack Identity service. '
                                   'Defaults to env[CREDDATA].')
          
-         return parser
+        return parser
+
+    def getImages(self, args):
+        return glintAPI.getImages(args.user_token, args.user_tenant)
 
 
+    def save(self, args):
+        return glintAPI.save(args.json_message, args.user_token, args.user_tenant)
+
+    def credentials(self, args):
+        return glintAPI.credentials(args.user_token, args.user_tenant, args.user_id)
 
 
     def get_sub_command_parser(self):
         parser = self.get_base_parser()
+        subparser = parser.add_subparsers(prog='glint')
 
-        self.subcommands = {}
-        subparser = parser.add_subparser()
+        # subparser for the get-images command
+        parser_getImages = subparser.add_parser('get-images', help='get images help')
+        parser_getImages.add_argument('--user-token',
+                                      default=env('USER_TOKEN'),
+                                      help='Token used for authentication with the '
+                                            'OpenStack Identity service. '
+                                            'Defaults to env[USER_TOKEN].')
+        parser_getImages.add_argument('--user-tenant',
+                                      default=env('USER_TENANT'),
+                                      help='Token used for authentication with the '
+                                            'OpenStack Identity service. '
+                                            'Defaults to env[USER_TOKEN].')
+        parser_getImages.set_defaults(func=self.getImages)
+
+        
+        # subparser for the save command
+        parser_save = subparser.add_parser('save', help='save help')
+        parser_save.add_argument('--user-token',
+                                 default=env('USER_TOKEN'),
+                                 help='Token used for authentication with the '
+                                      'OpenStack Identity service. '
+                                      'Defaults to env[USER_TOKEN].')
+        parser_save.add_argument('--user-tenant',
+                                 default=env('USER_TENANT'),
+                                 help='Token used for authentication with the '
+                                      'OpenStack Identity service. '
+                                      'Defaults to env[USER_TOKEN].')
+        parser_save.add_argument('--json-message',
+                                 default=env('JSON_MESSAGE'),
+                                 help='Message used for authentication with the '
+                                      'OpenStack Identity service. '
+                                      'Defaults to env[JSON_MESSAGE].')
+        parser_save.set_defaults(func=self.save)
 
 
+        # subparser for the credentials command
+        parser_credential = subparser.add_parser('credentials', help='credentials help')
+        parser_credential.add_argument('--user-token',
+                                        default=env('USER_TOKEN'),
+                                        help='Token used for authentication with the '
+                                             'OpenStack Identity service. '
+                                             'Defaults to env[USER_TOKEN].')
+        parser_credential.add_argument('--user-tenant',
+                                        default=env('USER_TENANT'),
+                                        help='Token used for authentication with the '
+                                            'OpenStack Identity service. ')
+        parser_credential.add_argument('--user-id',
+                                        default=env('USER_ID'),
+                                        help='User ID used for authentication with the '
+                                        'OpenStack Identity service. '
+                                        'Defaults to env[USER_ID].')
+        parser_credential.set_defaults(func=self.credentials)
 
 
+        return parser
+    
+
+    def main(self, argv):
+        subcommand_parser = self.get_sub_command_parser()
+#        print argv
+
+        args = subcommand_parser.parse_args(argv)
+
+#        print args
+
+        print args.func(args)
+
+
+def main():
+    glintCommands().main(sys.argv[1:])
+
+if __name__=="__main__":
+    sys.exit(main())

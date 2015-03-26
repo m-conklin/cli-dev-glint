@@ -1,0 +1,21 @@
+glint
+
+        get-images          --user-token    --user-tenant
+
+        save                --user-token    --user-tenant
+
+        credentials         --user-token    --user-tenant   --user-id
+
+        list-sites          --user-token    --user-tenant
+
+        delete-site         --user-token    --user-tenant   --user-id   --site-id
+
+        create-site         --user-token    --user-tenant   --user-id   --site-data
+
+        delete-credential   --user-token    --user-tenant   --user-id   --site-id
+
+        get-credential      --user-token    --user-tenant   --user-id   --site-id
+
+        has-credential      --user-token    --user-tenant   --user-id   --site-id  --ck-type
+
+        add-credential      --user-token    --user-tenant   --cred-data
