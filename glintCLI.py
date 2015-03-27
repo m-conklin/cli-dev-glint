@@ -78,7 +78,12 @@ class glintCommands(object):
         return self.api.getImages()
 
     def save(self, args):
-        return self.api.save(args.json_message)
+        if args.json_message == '':
+            print ''
+            print 'Command "glint save" requires either varibale JSON_MESSAGE or argument --json-message'
+            print ''
+        else:
+            return self.api.save(args.json_message)
 
     def credentials(self, args):
         return self.api.credentials()
@@ -87,21 +92,58 @@ class glintCommands(object):
         return self.api.listSites()
 
     def deleteSite(self, args):
-        return self.api.deleteSite(args.site_id)
+        if args.site_id == '':
+            print ''
+            print 'Command "glint delete-site" requires either varibale SITE_ID or argument --site-id'
+            print ''
+        else:
+            return self.api.deleteSite(args.site_id)
 
     def createSite(self, args):
-        return self.api.createSite(args.site_data)
+        if args.site_data == '':
+            print ''
+            print 'Command "glint create-site" requires either varibale SITE_DATA or argument --site-data'
+            print ''
+        else:
+            return self.api.createSite(args.site_data)
 
     def deleteCredential(self, args):
-        return self.api.deleteCredential(args.site_id)
+        if args.site_id == '':
+            print ''
+            print 'Command "glint delete-credential" requires either varibale SITE_ID or argument --site-id'
+            print ''
+        else:
+            return self.api.deleteCredential(args.site_id)
 
     def getCredential(self, args):
-        return self.api.getCredential(args.site_id)
+        if args.site_id == '':
+            print ''
+            print 'Command "glint get-credential" requires either varibale SITE_ID or argument --site-id'
+            print ''
+        else:
+            return self.api.getCredential(args.site_id)
 
     def hasCredential(self, args):
-        return self.api.hasCredential( args.site_id, args.ck_type)
+        if (args.site_id  == '') and (args.ck_type == ''):
+            print ''
+            print 'Command "glint has-credential" requires either varibales SITE_ID and CK_TYPE or arguments --site-id and --ck-type'
+            print ''
+        elif args.site_id == '':
+            print ''
+            print 'Command "glint has-credential" requires either varibale SITE_ID or agument --site-id'
+            print ''
+        elif args.ck_type == '':
+            print ''
+            print 'Command "glint has-credential" requires either varibale CK_TYPE or a    gument --ck-type'
+            print ''
+        else:
+            return self.api.hasCredential( args.site_id, args.ck_type)
 
     def addCredential(self, args):
+        if args.cred_data == '':
+            print ''
+            print 'Command "glint add-credential" requires either varibale CRED_DATA or argument --cred-data'
+            print ''
         return self.api.addCredential(args.cred_data)
 
 
