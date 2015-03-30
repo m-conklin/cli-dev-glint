@@ -23,7 +23,7 @@ class glintCommands(object):
 
     def __init__(self, parser_class=argparse.ArgumentParser):
         self.parser_class = parser_class
-        self.api = glint_api('api.log', 'logging.DEBUG', 'api.yaml')
+        self.api = glint_api('api.log', 'DEBUG', 'glint_api_cfg.yaml')
 
     # create parser for arguments to be inherited by the subcommand subparsers
     def get_base_parser(self):
@@ -75,7 +75,8 @@ class glintCommands(object):
     # default funtions for subcommand parsers to make calls to the glint API
 
     def getImages(self, args):
-        return self.api.getImages()
+        get_images = self.api.getImages()
+        
 
     def save(self, args):
         if args.json_message == '':
@@ -84,6 +85,9 @@ class glintCommands(object):
             print ''
         else:
             return self.api.save(args.json_message)
+
+
+            return images
 
     def credentials(self, args):
         return self.api.credentials()

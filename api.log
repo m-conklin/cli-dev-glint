@@ -1,0 +1,2 @@
+2015-03-27 22:26:59,557 - glint_api - DEBUG - Configuring glint api with http://localhost:9494/image_dist:http://127.0.0.1:5000/v2.0:glinttester:bhreagh:fff30c2c8d5c4d00a149ba4bfdac0835
+2015-03-27 22:27:38,530 - glint_api - DEBUG - Configuring glint api with http://localhost:9494/image_dist:http://127.0.0.1:5000/v2.0:glinttester:bhreagh:fff30c2c8d5c4d00a149ba4bfdac0835

@@ -19,7 +19,9 @@ class glint_api(object):
 
     def getImages(self):
         if self.USER_TOKEN and self.USER_TENANT and self.USER_ID:
-            return 'Images'
+            return {u'rows': [{u'container_format': u'bare', u'image': u'cirros-0.3.3-x86_64', u'disk_format': u'qcow2', u'sites': [{u'is_public': u'True', u'tenent': u'glinttenant', u'is_owner': u'False', u'name': u'TestSite'}, {u'is_public': u'True', u'tenent': u'glinttenant', u'is_owner': u'False', u'name': u'DevSite'}]}, {u'container_format': u'bare', u'image': u'Ubuntu-14.04-x86_64', u'disk_format': u'qcow2', u'sites': [{u'is_public': u'True', u'tenent': u'glinttenant', u'is_owner': u'False', u'name': u'ProdSite'}, {u'is_public': u'True', u'tenent': u'glinttenant', u'is_owner': u'False', u'name': u'DevSite'}]} ], u'sites': [{u'tenent': u'glinttenant', u'name': u'TestSite'}, {u'tenent': u'glinttenant', u'name': u'DevSite'}, {u'tenent': u'glinttenant', u'name': u'ProdSite'}]}
+
+
 
     def save(self, JSON_MESSAGE):
         return JSON_MESSAGE
@@ -28,7 +30,7 @@ class glint_api(object):
         return 'Credentials'
 
     def listSites(self):
-        return 'List of sites'
+        return [u'{"name":"Mouse","url":"http://mouse01.heprc.uvic.ca:5000/v2.0","authport":"5000","version":"v2.0","type":"Openstack","pk":"1"}']
 
     def deleteSite(self, SITE_ID):
         return 'Deleted site %s.'%SITE_ID
