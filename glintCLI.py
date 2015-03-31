@@ -1,4 +1,4 @@
-from glintAPI import glint_api
+from api.glint_api import glint_api
 import argparse
 import logging
 import os
@@ -51,11 +51,17 @@ class glintCommands(object):
                                   'Defaults to env[SITE_ID].')
 
         # used by create-site
-        self.parent.add_argument('--site-data',
-                             default=env('SITEDATA'),
+        self.parent.add_argument('--name',
                              help='Site data used for authentication with the '
-                                  'OpenStack Identity service. '
-                                  'Defaults to env[SITEDATA].')
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--url',
+                             help='Site data used for authentication with the '
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--format',
+                             help='Site data used for authentication with the '
+                                  'OpenStack Identity service. ')
 
         # used by has-credential
         self.parent.add_argument('--ck-type',
@@ -76,7 +82,7 @@ class glintCommands(object):
 
     def getImages(self, args):
         get_images = self.api.getImages()
-        
+        print get_images 
 
     def save(self, args):
         if args.json_message == '':
@@ -104,12 +110,7 @@ class glintCommands(object):
             return self.api.deleteSite(args.site_id)
 
     def createSite(self, args):
-        if args.site_data == '':
-            print ''
-            print 'Command "glint create-site" requires either varibale SITE_DATA or argument --site-data'
-            print ''
-        else:
-            return self.api.createSite(args.site_data)
+        return self.api.createSite(args.name,args.url,args.format)
 
     def deleteCredential(self, args):
         if args.site_id == '':
