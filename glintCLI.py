@@ -36,12 +36,22 @@ class glintCommands(object):
 
         # Global arguments
 
-        # used by save
-        self.parent.add_argument('--json-message',
-                             default=env('JSON_MESSAGE'),
+        # used by image copy and image delete
+        self.parent.add_argument('--image-name',
                              help='Message used for authentication with the '
-                                  'OpenStack Identity service. '
-                                  'Defaults to env[JSON_MESSAGE].')
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--image-source-site',
+                             help='Message used for authentication with the '
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--image-destination-site',
+                             help='Message used for authentication with the '
+                                  'OpenStack Identity service. ')
+        self.parent.add_argument('--image-source-tenant',
+                             help='Message used for authentication with the '
+                                  'OpenStack Identity service. ')
+
 
         # used by delete-site, delete-credential, get-credential, and has-credential
         self.parent.add_argument('--site-id',
@@ -71,11 +81,21 @@ class glintCommands(object):
                                   'Defaults to env[CK_TYPE].')
 
         # used-by add-credential
-        self.parent.add_argument('--cred-data',
-                             default=env('CREDDATA'),
+        self.parent.add_argument('--remote-tenant',
                              help='Credential data used for authentication with the '
-                                  'OpenStack Identity service. '
-                                  'Defaults to env[CREDDATA].')
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--remote-username',
+                             help='Credential data used for authentication with the '
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--remote-password',
+                             help='Credential data used for authentication with the '
+                                  'OpenStack Identity service. ')
+
+        self.parent.add_argument('--remote-site-id',
+                             help='Credential data used for authentication with the '
+                                  'OpenStack Identity service. ')
          
     
     # default funtions for subcommand parsers to make calls to the glint API
@@ -84,19 +104,11 @@ class glintCommands(object):
         get_images = self.api.getImages()
         print get_images 
 
-    def save(self, args):
-        if args.json_message == '':
-            print ''
-            print 'Command "glint save" requires either varibale JSON_MESSAGE or argument --json-message'
-            print ''
-        else:
-            return self.api.save(args.json_message)
+    def imageCopy(self, args):
+        return self.api.imageCopy(args.image_name,args.image_source_site,[args.image_destination_site])
 
-
-            return images
-
-    def credentials(self, args):
-        return self.api.credentials()
+    def imageDelete(self, args):
+        return self.api.imageDelete(args.image_name,args.image_source_site,args.image_source_tenant)
 
     def listSites(self, args):
         return self.api.listSites()
@@ -145,11 +157,7 @@ class glintCommands(object):
             return self.api.hasCredential( args.site_id, args.ck_type)
 
     def addCredential(self, args):
-        if args.cred_data == '':
-            print ''
-            print 'Command "glint add-credential" requires either varibale CRED_DATA or argument --cred-data'
-            print ''
-        return self.api.addCredential(args.cred_data)
+        return self.api.addCredential(args.remote_tenant,args.remote_username,args.remote_password,args.remote_site_id)
 
 
 
@@ -176,18 +184,18 @@ class glintCommands(object):
         parser_getImages.set_defaults(func=self.getImages)
 
         
-        # save
-        parser_save = subparser.add_parser('save',
+        # image-copy
+        parser_image_copy = subparser.add_parser('image-copy',
                                            parents=[self.parent],
                                            help='save help')
-        parser_save.set_defaults(func=self.save)
+        parser_image_copy.set_defaults(func=self.imageCopy)
 
 
-        # credentials
-        parser_credentials = subparser.add_parser('credentials',
+        # image-delete
+        parser_image_delete = subparser.add_parser('image-delete',
                                                  parents=[self.parent],
-                                                 help='credentials help')
-        parser_credentials.set_defaults(func=self.credentials)
+                                                 help='image-delete help')
+        parser_image_delete.set_defaults(func=self.imageDelete)
 
 
 
