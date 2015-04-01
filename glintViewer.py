@@ -13,6 +13,13 @@ def cli_view(json,cmd):
         col_sizes = fact_utils.get_max_column_sizes(json,headers)
     print headers
     print col_sizes
+    if "%s"%cmd in "get-images":
+        prettyPrintGetImages(json,headers,col_sizes)
+    else:
+        prettyPrint(json,headers,col_sizes)
+
+def prettyPrintGetImages(json,headers,colum_sizes):
+    print "implemnt htis"    
 
 def prettyPrint(json, headers, colum_sizes):
     print_line = line(colum_sizes)
