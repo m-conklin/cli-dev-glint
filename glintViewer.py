@@ -32,23 +32,12 @@ def body(json, headers, colum_sizes):
     for item in json:
         tmp_line = '|'
         for header, colum in zip(headers, colum_sizes):
-            tmp_line += ' '
-            tmp_line += item[header['key']]
-            tmp_line += ' '*(colum-len(item[header['key']])-1)
-            tmp_line += ' |'
+            tmp_line += ' ' + item[header['key']]
+            tmp_line += ' '*(colum-len(item[header['key']]))
+            tmp_line += '|'
         rtn_lines.append(tmp_line)
     return rtn_lines
           
 
-def main():
-    json = [{u'Result':u'Successful Delete', u'Item':u'Image1'}, {u'Result':u'Unsuccessful Delete', u'Item':u'Image2'}]
-    headers = [{'header':'Result', 'key':'Result'}, {'header':'Item', 'key':'Item'}]
-    colum_sizes = [19,6]
-
-    prettyPrint(json, headers, colum_sizes)
-
-
-if __name__=="__main__":
-    main()
-        
+       
     
