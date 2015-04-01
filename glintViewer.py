@@ -46,8 +46,8 @@ def body(json, headers, colum_sizes):
     for item in json:
         tmp_line = '|'
         for header, colum in zip(headers, colum_sizes):
-            tmp_line += ' ' + item[header['key']]
-            tmp_line += ' '*(colum-len(item[header['key']])+1)
+            tmp_line += ' ' + str(item[header['key']])
+            tmp_line += ' '*(colum-len(str(item[header['key']]))+1)
             tmp_line += '|'
         rtn_lines.append(tmp_line)
     return rtn_lines
