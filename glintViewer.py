@@ -26,11 +26,14 @@ def prettyPrintGetImages(json,headers,colum_sizes):
     for row in json['rows']:
         row_data=[row['image']]
         for col_site in json['sites']:
+            found=False
             for image_site in row['sites']:
                 if col_site['name'] == image_site['name']:
-                    row_data.append("X")
-                else:
-                    row_data.append("")
+                    found=True
+            if found:
+                row_data.append("X")
+            else:
+                row_data.append("")
         printRow(row_data,colum_sizes)
     print line(colum_sizes)
 
