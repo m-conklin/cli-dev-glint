@@ -19,7 +19,30 @@ def cli_view(json,cmd):
         prettyPrint(json,headers,col_sizes)
 
 def prettyPrintGetImages(json,headers,colum_sizes):
-    print "implemnt htis"    
+    #print "implemnt htis"
+    print line(colum_sizes)
+    print header(headers,colum_sizes)
+    print line(colum_sizes)
+    for row in json['rows']:
+        row_data=[row['image']]
+        for col_site in json['sites']:
+            for image_site in row['sites']:
+                if col_site['name'] == image_site['name']:
+                    row_data.append("X")
+                else:
+                    row_data.append("")
+        printRow(row_data,colum_sizes)
+    print line(colum_sizes)
+
+def printRow(row_data,col_sizes):
+    line = "|"
+    for idx,col_size in enumerate(col_sizes):
+        data_len = len(row_data[idx])
+        line+=' '
+        line+=row_data[idx]
+        line+=' '*(col_size-data_len)
+        line+=" |"
+    print line
 
 def prettyPrint(json, headers, colum_sizes):
     print_line = line(colum_sizes)
