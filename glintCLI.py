@@ -275,7 +275,7 @@ class glintCommands(object):
         else:
             # parse the args and call the handler function 
             command_args = subcommand_parser.parse_args(argv)
-            command_args.func(command_args)
+            print command_args.func(command_args)
             
 
 def main():
